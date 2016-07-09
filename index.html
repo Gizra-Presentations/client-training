@@ -138,14 +138,104 @@
         <img src="http://s.wsj.net/public/resources/images/OB-QK793_lordor_F_20111104134054.jpg" />
 				<ul>
   				<li class="fragment">“One Database to Rule Them All”</li>
-          <li class="fragment">Complex permissions and access</li>
           <li class="fragment">Sensible defaults</li>
           <li class="fragment">Streamlined maintenance</li>
           <li class="fragment">System-wide stats and reporting</li>
+          <li class="fragment">Complex permissions and access</li>
 				</ul>
 			</section>
 
-			<!-- CAse Study University -->
+      <section>
+				<h4>But really it's about permission</h4>
+          <pre class="stretch" style="margin-bottom: 50px;">
+            <code data-trim>
+function og_user_access($group_type, $gid, $string, $account = NULL, $skip_alter = FALSE, $ignore_admin = FALSE) {
+ global $user;
+  $perm = &drupal_static(__FUNCTION__, array());
+  // Mark the group ID and permissions that invoked an alter.
+  $perm_alter = &drupal_static(__FUNCTION__ . '_alter', array());
+  
+  if (!og_is_group($group_type, $gid)) {
+    // Not a group.
+    return NULL;
+  }
+  
+  
+  if (empty($account)) {
+    $account = clone $user;
+  }
+  
+  // User #1 has all privileges.
+  if ($account->uid == 1) {
+    return TRUE;
+  }
+  
+  // Administer group permission.
+  if (user_access('administer group', $account) && !$ignore_admin) {
+    return TRUE;
+  }
+  
+  // Group manager has all privileges (if variable is TRUE).
+  if (!empty($account->uid) && variable_get('og_group_manager_full_access', TRUE)) {
+    $group = entity_load_single($group_type, $gid);
+    if (!empty($group->uid) && $group->uid == $account->uid) {
+      return TRUE;
+    }
+  }
+  
+  $identifier = $group_type . ':' . $gid;
+  
+  // To reduce the number of SQL queries, we cache the users permissions
+  // in a static variable.
+  if (!isset($perm[$identifier][$account->uid])) {
+    $roles = og_get_user_roles($group_type, $gid, $account->uid);
+    $role_permissions = og_role_permissions($roles);
+  
+    $perms = array();
+    foreach ($role_permissions as $one_role) {
+      $perms += $one_role;
+    }
+    $perm[$identifier][$account->uid] = $perms;
+  }
+  
+  if (!$skip_alter && empty($perm_alter[$identifier][$account->uid][$string])) {
+    // Let modules alter the permissions. since $perm is static we create
+    // a clone of it.
+    $group = !empty($group) ? $group : entity_load_single($group_type, $gid);
+    $temp_perm = $perm[$identifier][$account->uid];
+    $context = array(
+      'string' => $string, 
+      'group_type' => $group_type, 
+      'group' => $group, 
+      'account' => $account,
+    );
+    drupal_alter('og_user_access', $temp_perm, $context);
+  
+    // Re-assing the altered permissions.
+    $perm[$identifier][$account->uid] = $temp_perm;
+  
+    // Make sure alter isnt called for the same permissions.
+    $perm_alter[$identifier][$account->uid][$string] = TRUE;
+  }
+  
+  return !empty($perm[$identifier][$account->uid][$string]) || (!empty($perm[$identifier][$account->uid]['administer group']) && !$ignore_admin);
+}
+            </code>
+          </pre>
+        <p style="font-size: 18px;">
+          Users are users and groups are content.
+        </p>
+			</section>
+
+			<!-- Case Study University -->
+      <section>
+				<h4>A Closer Look: The Case of a University</h4>
+        <img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/16703993/428c184c-4540-11e6-9507-ab9e6c2efcc0.gif">
+        <p>
+          Instantaneous site creation with OpenScholar - Wix for universities!
+        </p>
+			</section>
+
       <section>
 				<h4>A Closer Look: The Case of a University</h4>
         <img src="http://i.giphy.com/3osxYamKD88c6pXdfO.gif">
