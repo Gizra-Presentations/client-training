@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Scalability & Cost Efficiency through Multisite Installation</title>
+	<title>The Gizra Way: A Client Guide</title>
 
 	<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 	<meta name="author" content="Hakim El Hattab">
@@ -46,16 +46,12 @@
 			<section data-background="https://cloud.githubusercontent.com/assets/125707/12092123/dd49649a-b303-11e5-9355-e49a3881f5bd.png">
     		<div style="margin: 60px 0;">
       		<p style="background-color: black; opacity: 0.6; padding: 20px 40px; line-height: 2em; font-size: 1.5em;">
-            Scalability & Cost Efficiency through Multisite Installations
+            The <span style="font-family: Abril Fatface; color: #e27058; font-size: 65px;">
+				    gizra</span> Way
       		</p>
         </div>
     		<div style="margin: 60px 0; background-color: black; opacity: 0.6; padding: 20px 40px;">
-  				<span style="font-family: Abril Fatface; color: #e27058; font-size: 50px;">
-				    gizra
-  				</span>
-      		<span>
-      		  // Adam Stewart // <a href="http://www.twitter.com/adamhstewart">@adamhstewart</a>
-      		</span>
+  				A Client Guide
         </div>
 			</section>
 
@@ -87,253 +83,88 @@
 				</ul>
 			</section>
 
-			<!-- Types of multisite: Traditional -->
 			<section>
-				<h4>
-  				The Types of Multisite Installations:<br />
-          <span style="color: #e27058; font-weight: bold;">"Native" Drupal Multisite</span>
-        </h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/19743734/4a18309c-9b7f-11e6-9953-11b7ed9d7c8e.png">
-				<p style="font-size: 16px;">
-  				Multisite graphic images from Larry Garfield (@crell) - 
-  				<a href="https://www.palantir.net/blog/multi-headed-drupal">https://www.palantir.net/blog/multi-headed-drupal</a>
-				</p>
+				<h2>Budget Goggles</h2>
 			</section>
 
-			<!-- Types of multisite: Domain Access -->
 			<section>
-				<h4>
-  				The Types of Multisite Installations:<br />
-  				<span style="color: #e27058; font-weight: bold;">Domain Access</span>
-  		  </h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/19743740/53cbabc8-9b7f-11e6-9858-01829fc1a240.png">
-				<p style="font-size: 16px;">
-  				Multisite graphic images from Larry Garfield (@crell) - 
-  				<a href="https://www.palantir.net/blog/multi-headed-drupal">https://www.palantir.net/blog/multi-headed-drupal</a>
-				</p>
+				<h3>Every feature or bug has a price tag</h3>
+				<small>and the client shouldn't buy them all (at once)</small>
 			</section>
 
-			<!-- Types of multisite: OG -->
 			<section>
-				<h4>
-  				The Types of Multisite Installations:<br />
-  				<span style="color: #e27058; font-weight: bold;">Organic Groups (OG)</span>
-  		  </h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/19743745/5b0192c2-9b7f-11e6-891c-229dc5d011fa.png">
-				<p style="font-size: 16px;">
-  				Multisite graphic images from Larry Garfield (@crell) - 
-  				<a href="https://www.palantir.net/blog/multi-headed-drupal">https://www.palantir.net/blog/multi-headed-drupal</a>
-				</p>
+				<h3>How time-boxing works</h3>
 			</section>
- 
-      <section>
-				<h4>Organic Groups is the only way you should be doing multisite</h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/19743745/5b0192c2-9b7f-11e6-891c-229dc5d011fa.png">
-				<p style="font-size: 16px;">
-  				Multisite graphic images from Larry Garfield (@crell) - 
-  				<a href="https://www.palantir.net/blog/multi-headed-drupal">https://www.palantir.net/blog/multi-headed-drupal</a>
-				</p>
-				<p class="fragment" style="color: #e27058; font-weight: bold;">well maybe not really, but probably.</p>
-			</section>
- 
-      <section>
-				<h4>What are the Organic Group benefits?</h4>
-        <img src="http://s.wsj.net/public/resources/images/OB-QK793_lordor_F_20111104134054.jpg" />
-				<ul>
-  				<li>“One Database to Rule Them All”</li>
-          <li class="fragment">Sensible defaults</li>
-          <li class="fragment">Streamlined maintenance</li>
-          <li class="fragment">System-wide stats and reporting</li>
-          <li class="fragment">Complex permissions and access</li>
-				</ul>
-			</section>
-
-      <section>
-				<h4>But really it's about permission</h4>
-          <pre class="stretch" style="margin-bottom: 50px;">
-            <code data-trim>
-function og_user_access($group_type, $gid, $string, $account = NULL, $skip_alter = FALSE, $ignore_admin = FALSE) {
- global $user;
-  $perm = &drupal_static(__FUNCTION__, array());
-  // Mark the group ID and permissions that invoked an alter.
-  $perm_alter = &drupal_static(__FUNCTION__ . '_alter', array());
-  
-  if (!og_is_group($group_type, $gid)) {
-    // Not a group.
-    return NULL;
-  }
-  
-  
-  if (empty($account)) {
-    $account = clone $user;
-  }
-  
-  // User #1 has all privileges.
-  if ($account->uid == 1) {
-    return TRUE;
-  }
-  
-  // Administer group permission.
-  if (user_access('administer group', $account) && !$ignore_admin) {
-    return TRUE;
-  }
-  
-  // Group manager has all privileges (if variable is TRUE).
-  if (!empty($account->uid) && variable_get('og_group_manager_full_access', TRUE)) {
-    $group = entity_load_single($group_type, $gid);
-    if (!empty($group->uid) && $group->uid == $account->uid) {
-      return TRUE;
-    }
-  }
-  
-  $identifier = $group_type . ':' . $gid;
-  
-  // To reduce the number of SQL queries, we cache the users permissions
-  // in a static variable.
-  if (!isset($perm[$identifier][$account->uid])) {
-    $roles = og_get_user_roles($group_type, $gid, $account->uid);
-    $role_permissions = og_role_permissions($roles);
-  
-    $perms = array();
-    foreach ($role_permissions as $one_role) {
-      $perms += $one_role;
-    }
-    $perm[$identifier][$account->uid] = $perms;
-  }
-  
-  if (!$skip_alter && empty($perm_alter[$identifier][$account->uid][$string])) {
-    // Let modules alter the permissions. since $perm is static we create
-    // a clone of it.
-    $group = !empty($group) ? $group : entity_load_single($group_type, $gid);
-    $temp_perm = $perm[$identifier][$account->uid];
-    $context = array(
-      'string' => $string, 
-      'group_type' => $group_type, 
-      'group' => $group, 
-      'account' => $account,
-    );
-    drupal_alter('og_user_access', $temp_perm, $context);
-  
-    // Re-assing the altered permissions.
-    $perm[$identifier][$account->uid] = $temp_perm;
-  
-    // Make sure alter isnt called for the same permissions.
-    $perm_alter[$identifier][$account->uid][$string] = TRUE;
-  }
-  
-  return !empty($perm[$identifier][$account->uid][$string]) || (!empty($perm[$identifier][$account->uid]['administer group']) && !$ignore_admin);
-}
-            </code>
-          </pre>
-        <p style="font-size: 18px;">
-          Users are users and groups are content.
-        </p>
-			</section>
-
-			<!-- Case Study University -->
-      <section data-background="https://cloud.githubusercontent.com/assets/688507/16708381/b074ac64-45bf-11e6-9c68-a4355e5b52c6.jpg" class="present">
-        <img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/16703993/428c184c-4540-11e6-9507-ab9e6c2efcc0.gif">
-        <p>
-          Instantaneous site creation with OpenScholar. <br />
-          It's Wix for universities!
-        </p>
-        <p style="font-size: 0.7em;">Try it: <a href="http://dev-os-install.pantheonsite.io/">http://dev-os-install.pantheonsite.io</a> - Username/Password: osdemo/osdemo</p>
-			</section>
-
-      <section data-background="https://cloud.githubusercontent.com/assets/688507/16708381/b074ac64-45bf-11e6-9c68-a4355e5b52c6.jpg" class="present">
-				<h4>A Closer Look: The Case of a University</h4>
-        <img src="http://i.giphy.com/3osxYamKD88c6pXdfO.gif">
-        <p>
-          For one, cost alone is enough of a motivation to explore a more unified web presence. 
-          Bearing small, but significant costs for similar development tasks, sometimes hundreds 
-          of times over, can cost a large university in the millions of dollars.
-        </p>
-			</section>
-      
-      <section data-background="https://cloud.githubusercontent.com/assets/688507/16708381/b074ac64-45bf-11e6-9c68-a4355e5b52c6.jpg" class="present">
-				<h4>A Closer Look: The Case of a University</h4>
-				<img src="http://i.imgur.com/nhFIFXe.gif">
-			  <p>
-          More complex CMS sites come with more inherent security risks, and while the number of 
-          sites (and codebases) grow, the technical knowledge to apply security patches and other 
-          updates does not necessarily grow with it.
-			  </p>
-			</section>
-      
-      <section data-background="https://cloud.githubusercontent.com/assets/688507/16708381/b074ac64-45bf-11e6-9c68-a4355e5b52c6.jpg" class="present">
-				<h4>A Closer Look: The Case of a University</h4>
-				<img src="http://www.reactiongifs.com/wp-content/uploads/2013/06/smart-kid.gif">
-        <p>
-          As the competition for high-caliber students grows more fierce, web presence plays a 
-          crucial role in attracting applicants. 
-        </p>
-        <aside class="notes">
-          Yet as a highly-distributed web presence grows, 
-          the ability of communications and marketing team to leverage content strategy and analytics 
-          actually shrinks. Hundreds, or even thousands, of individually maintained websites create 
-          an unwieldily task for brand managers and analytic tracking relies on human gathering of data.
-        </aside>
-			</section>
-      
-      <section data-background="https://cloud.githubusercontent.com/assets/688507/16708381/b074ac64-45bf-11e6-9c68-a4355e5b52c6.jpg" class="present">
-				<h4>A Closer Look: The Case of a University</h4>
-        <img src="http://media3.popsugar-assets.com/files/thumbor/KbgCv3lcQw_axk9P_z8u95KVKM8/fit-in/1024x1024/filters:format_auto-!!-:strip_icc-!!-/2014/11/10/127/n/1922283/717e19c3a8e86c3e_elf-1/i/Exclamation.gif">
-        <p>
-          Providing a solid and universal user experience for content editors across the 
-          entire campus allows for a better adoption rate and a more streamlined education and 
-          training.
-        </p>
-			</section>
-
-			<!-- OpenScholar -->
-      <section data-background="http://www.harvard.edu/sites/default/files/content/121407_Snow_359.TL_.jpg" class="present">
-      <h4>Harvard OpenScholar</h4>
-        <ul>
-          <li class="fragment">OpenScholar runs <span style="color: #e27058; font-weight: bold;">over 7,000 websites</span> at Harvard on a single database.</li>
-          <li class="fragment">It has an <span style="color: #e27058; font-weight: bold;">estimated value of $7M</span> and was built at a fraction of the cost.</li>
-          <li class="fragment">A comprehensive test suite <span style="color: #e27058; font-weight: bold;">cut release cycles in half</span>.</li>
-        </ul>
-			</section>
-
-      <section>
-      <h4>Harvard OpenScholar</h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/17253230/6c263a62-5575-11e6-9bba-68c65e18082a.png" />
-			</section>
-
-			<!-- Other uses for multisite -->
+			
 			<section>
-      <h4>Other use cases for multisite</h4>
-        <ul>
-          <li class="fragment">
-            <span style="color: #e27058; font-weight: bold;">Knowledge/Data sharing platforms</span> that have lots of content and many editors (e.g. C4D and P4D of the European Commission).
-          </li>
-          <li class="fragment">
-            <span style="color: #e27058; font-weight: bold;">Non-profits/NGOs</span> that need more than a 
-            handful of sites - provides cost efficiency and low maintenance overhead.
-          </li>
-          <li class="fragment">
-            <span style="color: #e27058; font-weight: bold;">Law-Firms/Large practices</span> to provide distributed 
-            access and content editing permissions.
-          </li>
-        </ul>
+  				<p>The price estimation is created by issue and reviewed with the client.</p>
+          <img src="https://cloud.githubusercontent.com/assets/125707/13378770/e7677ad4-de19-11e5-905d-a83f76696a7c.jpg" class="stretch" />
 			</section>
 
-			<!-- OpSys -->
-      <section data-background="http://eeagrants.org/var/eeagrants/storage/images/media/images/who-we-are/ec/72900-1-eng-GB/EC_full_page.jpg" class="present">
-  			<h4>Project Sharing: P4D (European Commission)</h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/125707/12098605/ea29fecc-b32b-11e5-9d4f-adff92b8402f.png" />
+			<section>
+  				<p>Issues are created in github and assigned the proper time box.</p>
+          <img src="https://cloud.githubusercontent.com/assets/688507/25858363/36e7a1f4-34a1-11e7-878e-e6891235503d.png" class="stretch" />
 			</section>
 
-      <section data-background="http://eeagrants.org/var/eeagrants/storage/images/media/images/who-we-are/ec/72900-1-eng-GB/EC_full_page.jpg" class="present">
-  			<h4>Knowledge Sharing: C4D (European Commission)</h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/17247976/c357adde-555c-11e6-8c93-104207eedd40.png" />
+			<section>
+  				<p>Developers work issue by issue according to the time box. Sometimes they will update the time box used - sometimes they will request more time.</p>
+          <img src="https://cloud.githubusercontent.com/assets/688507/25858301/08a6b000-34a1-11e7-9852-a2e971539820.png" class="stretch" />
 			</section>
 
-			<!-- Sierra Club -->
-      <section data-background="https://eldermountain.files.wordpress.com/2016/07/moon.jpg" class="present">
-  			<h4>Large NGO: Sierra Club</h4>
-				<img class="stretch" src="https://cloud.githubusercontent.com/assets/688507/16700763/b8103024-4529-11e6-8133-529d35105e7b.png" />
+			<section>
+  				<p>It is the project manager's responsibility to monitor a project's hours. We have a custom tool that we use on our end to track progress.</p>
+          <img src="https://cloud.githubusercontent.com/assets/688507/25858898/8d0d4380-34a2-11e7-95ae-1b9ca7a83001.png" class="stretch" />
 			</section>
+
+			<section>
+				<h3>Using Github as a Project Management Tool</h3>
+				<p>Github was created primarily as a place for development teams to manage code bases and work together. It also has some powerful project management tools. This allows us a "one-stop" location for developer and client communication, increasing overall transparency of communication.
+  				
+			</section>
+			
+			<section>
+  				<h4>A client's role in Github is mainly in the issue queue.</h4>
+  				<ul>
+            <li class="fragment">Reviewing issues that have been assigned to them</li>
+            <li class="fragment">Looking for labels that require attention (in particular, watch out for the "needs clarification" label)</li>
+            <li class="fragment">Monitoring communication between the project manager and the developers to see that it is on track.</li>
+  				</ul>
+			</section>
+
+			<section>
+				<h3>Other areas of Github to know about</h3>
+			</section>
+
+			<section>
+  			  <h4>The Project Board</h4>
+  				<p>This is a useful area to see what is being worked on at the moment and what is in the queue. The client shouldn't move issues around in the project board, but can note to the project manager if something doesn't look right. Soe projects have a column for issues that require the client's attention.</p>
+          <img src="https://cloud.githubusercontent.com/assets/688507/25859924/9ed685ec-34a5-11e7-89f0-f2725ce2c4e2.png" class="stretch" />
+			</section>
+
+			<section>
+  			  <h4>Milestones</h4>
+  				<p>This tracks progress of the project at a high level and is usually connected to a release cycle or phase in the project with a due date.</p>
+          <img src="https://cloud.githubusercontent.com/assets/688507/25859968/b538af90-34a5-11e7-9f34-cc5e2aed60ab.png" class="stretch" />
+			</section>
+
+			<section>
+  			  <h4>Pull Requests</h4>
+  				<p>This is generally a <b>developers-only</b> zone, but there is some use to paying attention to the queue here. Since it is the active space where developers are creating the code that solves the issues, there will often be screenshots here to document progress.</p>
+          <img src="https://cloud.githubusercontent.com/assets/688507/25860061/f82845b8-34a5-11e7-89d5-fa56a1e220ac.png" class="stretch" />
+			</section>
+
+			<section>
+  				<h4>GitHub Techniques</h4>
+  				<ul>
+            <li class="fragment">Assigning issues the best way to tell someone that "the ball is in your court" - essentially this issue is waiting on you to resolve it.</li>
+            <li class="fragment">Mentioning someone ("@username" just like Twitter) is the way to bring someone's attention to an issue or ask a question.</li>
+            <li class="fragment">Notifications can be a good (or annoying) way to keep on top of issues.</li>
+            <li class="fragment">Issues can be filtered according to tags, assignee, or even text search.</li>
+            <li class="fragment">Learning how to use Markdown language can be an effective way of making your issues clear.</li>
+  				</ul>
+			</section>
+
+
 
 			<!-- Last slide -->
 			<section data-background="https://cloud.githubusercontent.com/assets/125707/13070800/cf27ec14-d497-11e5-82e3-7cb9c73fe6be.jpg" class="present">
